@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buat Kamu</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at top,#2a1a2e 0%,#120c18 60%,#0a070e 100%);}
+  .serif{font-family:'Cormorant Garamond',serif;}
+  .fade-in{animation:fadeIn 1.2s ease forwards;opacity:0}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .shake{animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+  .petal{position:fixed;top:-20px;pointer-events:none;color:#f9a8b8;opacity:.5;animation:fall linear forwards;z-index:0}
+  @keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
+  .hidden-sec{display:none}
+</style>
+</head>
+<body class="min-h-screen text-rose-50 flex items-center justify-center px-6 overflow-hidden">
+
+  <!-- 1. KUNCI / SANDI -->
+  <section id="lock" class="relative z-10 w-full max-w-sm text-center fade-in">
+    <p class="text-xs tracking-[0.35em] uppercase text-rose-300/70 mb-6">Ada sesuatu buat kamu</p>
+    <h1 class="serif text-4xl mb-3">Sebelum dibuka…</h1>
+    <p class="text-rose-100/60 text-sm font-light mb-8">Masukin sandinya dulu ya.</p>
+
+    <input id="sandi" type="text" autocomplete="off" placeholder="• • • • • •"
+      class="w-full text-center tracking-[0.3em] bg-white/5 border border-rose-200/20 rounded-full px-6 py-3 outline-none focus:border-rose-300/60 transition placeholder:text-rose-200/30">
+    <button id="btnBuka"
+      class="mt-4 w-full rounded-full bg-rose-400/90 hover:bg-rose-400 text-rose-950 font-medium py-3 transition">
+      Buka
+    </button>
+
+    <p id="petunjuk" class="mt-6 text-xs text-rose-200/50 italic font-light">Petunjuk: <span id="hintText"></span></p>
+    <p id="salah" class="mt-3 text-sm text-rose-300 h-5"></p>
+  </section>
+
+  <!-- 2. CERITA -->
+  <section id="story" class="hidden-sec relative z-10 w-full max-w-md text-center">
+    <p id="storyText" class="serif text-3xl sm:text-4xl leading-snug min-h-[9rem] flex items-center justify-center"></p>
+    <button id="btnNext"
+      class="mt-10 text-sm tracking-widest uppercase text-rose-300/80 hover:text-rose-200 transition">
+      Lanjut →
+    </button>
+  </section>
+
+  <!-- 3. PERTANYAAN -->
+  <section id="final" class="hidden-sec relative z-10 w-full max-w-md text-center">
+    <h2 class="serif text-4xl sm:text-5xl leading-tight mb-3 fade-in">Jujur taku tapi mungkin gua beraniin kali ya,itu anu  <span class="italic text-rose-300">Do you want to be my lover?</span> HEHEHEHE</h2>
+    <p id="namaFinal" class="text-rose-100/60 text-sm font-light mb-10 fade-in" style="animation-delay:.6s"></p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center fade-in" style="animation-delay:1.2s">
+      <button id="btnYes" class="rounded-full bg-rose-400 hover:bg-rose-300 text-rose-950 font-medium px-8 py-3 transition">Mau</button>
+      <button id="btnWait" class="rounded-full border border-rose-200/30 hover:bg-white/5 px-8 py-3 transition">Aku butuh waktu</button>
+    </div>
+  </section>
+
+  <!-- 4a. JAWAB MAU -->
+  <section id="yes" class="hidden-sec relative z-10 w-full max-w-md text-center">
+    <h2 class="serif text-5xl mb-4 fade-in">Makasih ya <span class="text-rose-300">♥</span></h2>
+    <p class="text-rose-100/70 font-light mb-8 fade-in" style="animation-delay:.6s">rada cemas tapi makasih ya langsung saja chet beb.</p>
+    <a id="waYes" target="_blank"
+      class="inline-block rounded-full bg-rose-400 hover:bg-rose-300 text-rose-950 font-medium px-8 py-3 transition fade-in" style="animation-delay:1.2s">
+      Kabarin aku di WhatsApp
+    </a>
+  </section>
+
+  <!-- 4b. JAWAB BUTUH WAKTU -->
+  <section id="wait" class="hidden-sec relative z-10 w-full max-w-md text-center">
+    <h2 class="serif text-4xl mb-4 fade-in">Gapapa, santai aja.</h2>
+    <p class="text-rose-100/70 font-light mb-8 fade-in" style="animation-delay:.6s">Aku ga buru-buru. Kapan pun kamu siap, kabarin aku ya.</p>
+    <a id="waWait" target="_blank"
+      class="inline-block rounded-full border border-rose-200/30 hover:bg-white/5 px-8 py-3 transition fade-in" style="animation-delay:1.2s">
+      Chat aku
+    </a>
+  </section>
+
+<script>
+/* ========== CONFIG (ganti di sini) ========== */
+const CONFIG = {
+  nama: "hai karin",                 // nama cewenya
+  sandi: "leobara",                // sandinya (ga peduli huruf besar/kecil)
+  petunjuk: "nama mu dan aku digabung", // petunjuk sandi
+  wa: "6287740144836",              // nomor WA lo, format 62xxx tanpa + / 0
+  pesan: [
+    "Hai, karin.",
+    "Thank you ya udah mau liat ini.",
+    "gua bingung euy mau bilang apa.",
+    "Ga ada yang spesial dari kata-kata gua, tapi.",
+    "Jadi, ada satu hal yang pengen gua tanyain…"
+  ]
+};
+/* ============================================= */
+
+const $ = id => document.getElementById(id);
+const show = id => {
+  ["lock","story","final","yes","wait"].forEach(s => $(s).classList.add("hidden-sec"));
+  $(id).classList.remove("hidden-sec");
+  $(id).classList.add("fade-in");
+};
+
+$("hintText").textContent = CONFIG.petunjuk;
+$("namaFinal").textContent = "— dari orang yang lagi deg-degan";
+
+// Sandi
+function cekSandi(){
+  const v = $("sandi").value.trim().toLowerCase();
+  if(v === CONFIG.sandi.toLowerCase()){
+    startStory();
+  } else {
+    $("salah").textContent = "Hmm, belum tepat. Coba lagi ya.";
+    $("sandi").classList.remove("shake"); void $("sandi").offsetWidth;
+    $("sandi").classList.add("shake");
+  }
+}
+$("btnBuka").onclick = cekSandi;
+$("sandi").addEventListener("keydown", e => { if(e.key==="Enter") cekSandi(); });
+
+// Cerita
+let i = 0;
+function tampilPesan(){
+  const el = $("storyText");
+  el.classList.remove("fade-in"); void el.offsetWidth;
+  el.textContent = CONFIG.pesan[i].replace("{nama}", CONFIG.nama);
+  el.classList.add("fade-in");
+  $("btnNext").textContent = i === CONFIG.pesan.length-1 ? "Lanjut →" : "Lanjut →";
+}
+function startStory(){ show("story"); i = 0; tampilPesan(); mulaiPetal(); }
+$("btnNext").onclick = () => {
+  i++;
+  if(i >= CONFIG.pesan.length){ show("final"); return; }
+  tampilPesan();
+};
+
+// Jawaban
+const waLink = txt => `https://wa.me/${CONFIG.wa}?text=${encodeURIComponent(txt)}`;
+$("btnYes").onclick = () => {
+  $("waYes").href = waLink("Aku mau ♥");
+  show("yes"); ledakanPetal();
+};
+$("btnWait").onclick = () => {
+  $("waWait").href = waLink("Aku butuh waktu dulu ya, tapi makasih udah jujur.");
+  show("wait");
+};
+
+// Kelopak jatuh (halus)
+function buatPetal(){
+  const p = document.createElement("span");
+  p.className = "petal";
+  p.textContent = "♥";
+  p.style.left = Math.random()*100 + "vw";
+  p.style.fontSize = (10 + Math.random()*14) + "px";
+  p.style.animationDuration = (7 + Math.random()*6) + "s";
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), 14000);
+}
+let petalTimer;
+function mulaiPetal(){ if(!petalTimer) petalTimer = setInterval(buatPetal, 900); }
+function ledakanPetal(){ for(let k=0;k<30;k++) setTimeout(buatPetal, k*90); }
+</script>
+</body>
+</html>
